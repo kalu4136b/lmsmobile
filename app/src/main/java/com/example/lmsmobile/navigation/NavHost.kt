@@ -9,6 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.lmsmobile.ui.dashboard.DashboardScreen
 import com.example.lmsmobile.ui.login.LoginScreen
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun AppNavHost(
@@ -23,7 +26,18 @@ fun AppNavHost(
         composable(Routes.LOGIN) {
             LoginScreen(
                 onLoginSuccess = { response ->
-                    navController.navigate("dashboard/${response.indexNumber}/${response.name}")
+                    val safeIndex = response.indexNumber ?: "unknown"
+                    val rawName = response.name
+
+                    // Handle null or "NULL" names from backend
+                    val safeName = if (rawName.isNullOrBlank() || rawName == "NULL") {
+                        "Student"
+                    } else {
+                        rawName
+                    }
+
+                    val encodedName = URLEncoder.encode(safeName.trim(), StandardCharsets.UTF_8.name())
+                    navController.navigate(Routes.dashboardRoute(safeIndex, safeName)) //  uses the function
                 }
             )
         }
@@ -35,10 +49,11 @@ fun AppNavHost(
                 navArgument("studentName") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val studentIndex = backStackEntry.arguments?.getString("studentIndex") ?: ""
-            val studentName = backStackEntry.arguments?.getString("studentName") ?: ""
+            val studentIndex = backStackEntry.arguments?.getString("studentIndex") ?: "unknown"
+            val encodedName = backStackEntry.arguments?.getString("studentName") ?: "Student"
+            val decodedName = URLDecoder.decode(encodedName, StandardCharsets.UTF_8.name())
 
-            DashboardScreen(studentIndex = studentIndex, studentName = studentName)
+            DashboardScreen(studentIndex = studentIndex, studentName = decodedName)
         }
     }
 }
