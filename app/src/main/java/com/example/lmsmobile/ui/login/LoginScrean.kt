@@ -1,5 +1,6 @@
 package com.example.lmsmobile.ui.login
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -13,8 +14,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.lmsmobile.data.model.LoginResponse
 import com.example.lmsmobile.data.model.LoginViewModel
+import com.example.lmsmobile.data.model.LoginResponse
 import com.example.lmsmobile.ui.theme.GradientBrush
 
 @Composable
@@ -30,12 +31,12 @@ fun LoginScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Show success snackbar and navigate
     LaunchedEffect(loginSuccess) {
-        if (loginSuccess != null) {
-            snackbarHostState.showSnackbar("Login successful!")
-            onLoginSuccess(loginSuccess!!)
+        loginSuccess?.let { response ->
+            onLoginSuccess(response) // Pass original response
             loginViewModel.clearLoginSuccess()
+            snackbarHostState.showSnackbar("Login successful!")
+            Log.d("LoginScreen", "Received name: ${response.name}")
         }
     }
 

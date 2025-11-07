@@ -7,12 +7,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun DashboardScreen(
     studentIndex: String,
     studentName: String
 ) {
+    // Decode name in case it was URL-encoded (e.g., dots replaced with %2E)
+    val decodedName = URLDecoder.decode(studentName, StandardCharsets.UTF_8.name())
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -21,7 +26,7 @@ fun DashboardScreen(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Welcome, $studentName!",
+                text = "Welcome, $decodedName!",
                 style = MaterialTheme.typography.headlineMedium.copy(fontSize = 26.sp)
             )
 
