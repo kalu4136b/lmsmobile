@@ -2,49 +2,71 @@ package com.example.lmsmobile.ui.dashboard
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lmsmobile.ui.dashboard.components.DashboardTopBar
+import com.example.lmsmobile.ui.dashboard.components.SideBar
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 @Composable
 fun DashboardScreen(
     studentIndex: String,
-    studentName: String
+    studentName: String,
+
 ) {
-    // Decode name in case it was URL-encoded (e.g., dots replaced with %2E)
     val decodedName = URLDecoder.decode(studentName, StandardCharsets.UTF_8.name())
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        contentAlignment = Alignment.TopCenter
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            SideBar(onItemClick = { label ->
+                // TODO: Handle navigation based on label
+            })
+        }
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Welcome, $decodedName!",
-                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 26.sp)
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            DashboardTopBar(
+                drawerState = drawerState,
+                scope = scope,
+                onSearch = { query -> /* TODO */ },
+                onNotificationClick = { /* TODO */ },
+                onProfileClick = { /* TODO */ }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Welcome, $decodedName!",
+                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 26.sp)
+                    )
 
-            Text(
-                text = "Index Number: $studentIndex",
-                style = MaterialTheme.typography.bodyLarge
-            )
+                    Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "Index Number: $studentIndex",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
 
-            Text(
-                text = "This is your LMS dashboard.",
-                style = MaterialTheme.typography.bodyMedium
-            )
+                    Spacer(modifier = Modifier.height(24.dp))
 
-            // TODO: Add dashboard content (cards, lists, etc.)
+                    Text(
+                        text = "This is your LMS dashboard.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
         }
     }
 }

@@ -1,22 +1,22 @@
 package com.example.lmsmobile.ui.login
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.lmsmobile.data.model.LoginViewModel
 import com.example.lmsmobile.data.model.LoginResponse
-import com.example.lmsmobile.ui.theme.GradientBrush
 
 @Composable
 fun LoginScreen(
@@ -33,10 +33,10 @@ fun LoginScreen(
 
     LaunchedEffect(loginSuccess) {
         loginSuccess?.let { response ->
-            onLoginSuccess(response) // Pass original response
+            Log.d("LoginScreen", "Received name: ${response.name}")
+            onLoginSuccess(response)
             loginViewModel.clearLoginSuccess()
             snackbarHostState.showSnackbar("Login successful!")
-            Log.d("LoginScreen", "Received name: ${response.name}")
         }
     }
 
@@ -46,25 +46,28 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(GradientBrush)
+                .background(Color.White)
                 .padding(innerPadding)
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
+                .padding(horizontal = 24.dp)
+                .padding(top = 32.dp), // 🔼 Push content down slightly from top
+            contentAlignment = Alignment.TopCenter // 🔼 Align content to top
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = "Login Icon",
-                    tint = Color.White,
-                    modifier = Modifier.size(64.dp)
-                )
 
-                Spacer(Modifier.height(16.dp))
+                // ✅ Logo from URL
+                Image(
+                    painter = rememberAsyncImagePainter("https://www.harlow-college.ac.uk/images/harlow_college/study-options/course-areas/bright-futures/redesign/bright-futures-logo-large-cropped.png"),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(bottom = 8.dp),
+                    contentScale = ContentScale.Fit
+                )
 
                 Text(
                     text = "LMS Login",
-                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 24.sp),
-                    color = Color.White
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 30.sp),
+                    color = Color.Black
                 )
 
                 Spacer(Modifier.height(16.dp))

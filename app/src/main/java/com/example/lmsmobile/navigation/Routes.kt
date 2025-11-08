@@ -8,8 +8,7 @@ object Routes {
     const val DASHBOARD = "dashboard/{studentIndex}/{studentName}"
 
     fun dashboardRoute(index: String, name: String): String {
-        return "dashboard/${index.trim()}/${
-            URLEncoder.encode(name.trim(), StandardCharsets.UTF_8.name())
-        }"
+        val encodedName = URLEncoder.encode(name.trim(), StandardCharsets.UTF_8.name())
+        return "dashboard/${index.trim()}/$encodedName"
     }
 }

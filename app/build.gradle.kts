@@ -72,4 +72,12 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // if you're using Gson
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.0")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+
+
+
+
 }
