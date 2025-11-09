@@ -1,22 +1,23 @@
 package com.example.lmsmobile.ui.login
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.lmsmobile.data.model.LoginViewModel
 import com.example.lmsmobile.data.model.LoginResponse
-import com.example.lmsmobile.ui.theme.GradientBrush
+import com.example.lmsmobile.data.model.DegreeInfo
 
 @Composable
 fun LoginScreen(
@@ -33,10 +34,22 @@ fun LoginScreen(
 
     LaunchedEffect(loginSuccess) {
         loginSuccess?.let { response ->
-            onLoginSuccess(response) // Pass original response
-            loginViewModel.clearLoginSuccess()
+            Log.d("LoginScreen", "Received name: ${response.fullName}")
+
+            val degreeId = response.degree?.id ?: 0L
+            val degreeName = response.degree?.degreeName ?: ""
+
+            Log.d("LoginScreen", "Navigating with degreeId: $degreeId")
+
+            val cleanedResponse = LoginResponse(
+                indexNumber = response.indexNumber,
+                fullName = response.fullName,
+                degree = DegreeInfo(degreeId, degreeName)
+            )
+
             snackbarHostState.showSnackbar("Login successful!")
-            Log.d("LoginScreen", "Received name: ${response.name}")
+            onLoginSuccess(cleanedResponse)
+            loginViewModel.clearLoginSuccess()
         }
     }
 
@@ -46,52 +59,55 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(GradientBrush)
+                .background(Color.White)
                 .padding(innerPadding)
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
+                .padding(horizontal = 24.dp, vertical = 8.dp),
+            contentAlignment = Alignment.TopCenter
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = "Login Icon",
-                    tint = Color.White,
-                    modifier = Modifier.size(64.dp)
-                )
-
-                Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = "LMS Login",
-                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 24.sp),
-                    color = Color.White
+                    text = "Login Page",
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 30.sp),
+                    color = Color.Black
                 )
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(8.dp))
+
+                Image(
+                    painter = rememberAsyncImagePainter("https://www.harlow-college.ac.uk/images/harlow_college/study-options/course-areas/bright-futures/redesign/bright-futures-logo-large-cropped.png"),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(bottom = 2.dp),
+                    contentScale = ContentScale.Fit
+                )
+
+                Spacer(Modifier.height(12.dp))
 
                 OutlinedTextField(
                     value = indexNumber,
-                    onValueChange = { loginViewModel.onIndexNumberChange(it) },
+                    onValueChange = loginViewModel::onIndexNumberChange,
                     label = { Text("Index Number") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(6.dp))
 
                 OutlinedTextField(
                     value = password,
-                    onValueChange = { loginViewModel.onPasswordChange(it) },
+                    onValueChange = loginViewModel::onPasswordChange,
                     label = { Text("Password") },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
 
                 Button(
-                    onClick = { loginViewModel.login() },
+                    onClick = loginViewModel::login,
                     enabled = !isLoading,
                     modifier = Modifier.fillMaxWidth()
                 ) {
