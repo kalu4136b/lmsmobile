@@ -13,18 +13,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+ main
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.CircleShape
+
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.lmsmobile.navigation.Routes
+main
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.lmsmobile.data.network.RetrofitClient
 import com.example.lmsmobile.data.repository.TaskRepository
 import com.example.lmsmobile.navigation.Routes
-import com.example.lmsmobile.ui.dashboard.components.DashboardTopBar
-import com.example.lmsmobile.ui.dashboard.components.SideBar
+import com.example.lmsmobile.ui.components.DashboardTopBar
+import com.example.lmsmobile.ui.components.SideBar
+import com.example.lmsmobile.ui.screen.ProfileViewModel
 import java.net.URLDecoder
-import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
@@ -39,7 +45,6 @@ fun DashboardScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    // Auto-close drawer when returning to Dashboard
     LaunchedEffect(Unit) {
         drawerState.close()
     }
@@ -49,9 +54,16 @@ fun DashboardScreen(
     )
     val tasks by taskViewModel.tasks.collectAsState()
 
+    val profileViewModel: ProfileViewModel = viewModel()
+    val profile by profileViewModel.profile.collectAsState()
+
     LaunchedEffect(degreeId) {
         Log.d("DashboardScreen", "Loading tasks for degreeId: $degreeId")
         taskViewModel.loadTasks(degreeId)
+    }
+
+    LaunchedEffect(studentIndex) {
+        profileViewModel.loadProfile(studentIndex)
     }
 
     ModalNavigationDrawer(
@@ -67,32 +79,32 @@ fun DashboardScreen(
                     )
             ) {
                 Spacer(modifier = Modifier.height(90.dp))
-                SideBar(onItemClick = { label ->
-                    when (label) {
-                        "Results" -> {
-                            val encodedName = URLEncoder.encode(studentName.trim(), StandardCharsets.UTF_8.name())
-                            val route = Routes.resultsRoute(studentIndex, encodedName, degreeId)
-                            navController.navigate(route)
-                        }
-                        "Subjects" -> { /* TODO */ }
-                        "Profile" -> { /* TODO */ }
-                    }
-                })
+                // 🔹 Updated SideBar usage
+                SideBar(
+                    navController = navController,
+                    studentIndex = studentIndex
+                )
             }
         }
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // TopBar with no title
             DashboardTopBar(
                 title = "",
                 drawerState = drawerState,
                 scope = scope,
-                onNotificationClick = { /* TODO */ },
-                onProfileClick = { /* TODO */ }
+                showBackButton = false,
+                onBackClick = {},
+                onNotificationClick = {},
+                onProfileClick = {
+                    navController.navigate(Routes.profileRoute(studentIndex))
+                },
+                showNotificationIcon = true,
+                showProfileIcon = true,
+                profileImageUrl = profile?.profileImageUrl
             )
+
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Welcome message
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -112,10 +124,7 @@ fun DashboardScreen(
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "\uD83D\uDC4B", // 👋 waving hand emoji
-                    fontSize = 28.sp
-                )
+                Text(text = "\uD83D\uDC4B", fontSize = 28.sp)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -126,12 +135,9 @@ fun DashboardScreen(
                     .padding(horizontal = 24.dp)
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // Section title
                 Text("📋 Task Schedule", style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Task list
                 if (tasks.isEmpty()) {
                     Text("No tasks available.", style = MaterialTheme.typography.bodyMedium)
                 } else {

@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.lmsmobile.data.network.RetrofitClient
 import com.example.lmsmobile.data.repository.ResultRepository
-import com.example.lmsmobile.ui.dashboard.components.DashboardTopBar
+import com.example.lmsmobile.ui.components.DashboardTopBar
 
 @Composable
 fun ResultsScreen(
@@ -36,41 +36,21 @@ fun ResultsScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // 🔹 TopBar with back navigation
+        // 🔹 TopBar with back navigation and title
         DashboardTopBar(
-            title = "",
+            title = "Results", // ✅ Title added
             scope = rememberCoroutineScope(),
             showBackButton = true,
-            onBackClick = {
-                navController.popBackStack()
-            },
+            onBackClick = { navController.popBackStack() },
             onNotificationClick = {},
-            onProfileClick = {}
+            onProfileClick = {},
+            showNotificationIcon = false,
+            showProfileIcon = false
         )
 
-        // 🔹 Title below TopBar
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Assessment,
-                contentDescription = "Results Icon",
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "📊 Results",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            )
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔹 Results Content
+        // Results Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
