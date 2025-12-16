@@ -88,6 +88,7 @@ fun AppNavHost(
             DashboardScreen(
                 studentIndex = studentIndex,
                 studentName = decodedName,
+<<<<<<< Updated upstream
                 degreeId = degreeId,
                 navController = navController
             )
@@ -128,6 +129,8 @@ fun AppNavHost(
                 degreeId = degreeId,
 =======
                 studentName = decodedName,
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                 navController = navController
             )

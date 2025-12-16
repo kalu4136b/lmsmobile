@@ -33,7 +33,10 @@ fun DashboardScreen(
     studentIndex: String,
     studentName: String,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     degreeId: Long,
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     navController: NavHostController
@@ -122,6 +125,7 @@ fun DashboardScreen(
             }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             Spacer(modifier = Modifier.height(16.dp))
 
             Column(
@@ -151,6 +155,8 @@ fun DashboardScreen(
                 }
             }
 =======
+=======
+>>>>>>> Stashed changes
 
             // TODO: Add dashboard content (cards, lists, etc.)
 >>>>>>> Stashed changes
