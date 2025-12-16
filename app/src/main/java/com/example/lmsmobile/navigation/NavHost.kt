@@ -1,7 +1,13 @@
 package com.example.lmsmobile.navigation
 
+import android.app.Application
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+ main
+
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelProvider
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,6 +17,9 @@ import androidx.navigation.navArgument
 import com.example.lmsmobile.ui.dashboard.DashboardScreen
 import com.example.lmsmobile.ui.dashboard.TaskScheduleScreen
 import com.example.lmsmobile.ui.login.LoginScreen
+import com.example.lmsmobile.ui.notes.AddNoteScreen
+import com.example.lmsmobile.ui.notes.NotesScreen
+import com.example.lmsmobile.ui.notes.NotesViewModel
 import com.example.lmsmobile.ui.results.ResultsScreen
 import com.example.lmsmobile.ui.screen.ProfileScreen
 import com.example.lmsmobile.ui.screen.ProfileViewModel
@@ -56,7 +65,25 @@ fun AppNavHost(
             )
         }
 
+ main
         // Dashboard
+=======
+        composable(Routes.NOTES) {
+            val context = LocalContext.current
+            val vm: NotesViewModel = viewModel(
+                factory = ViewModelProvider.AndroidViewModelFactory(context.applicationContext as Application)
+            )
+            NotesScreen(vm) { navController.navigate(Routes.ADD_NOTE) }
+        }
+
+        composable(Routes.ADD_NOTE) {
+            val vm: NotesViewModel = viewModel()
+            AddNoteScreen(vm) { navController.popBackStack() }
+        }
+
+
+        // 🏠 Dashboard screen
+
         composable(
             route = Routes.DASHBOARD,
             arguments = listOf(
@@ -78,7 +105,15 @@ fun AppNavHost(
             )
         }
 
+ main
         // Task Schedule
+
+            DashboardScreen(
+                navController = navController,    // ✅ pass navController
+                studentIndex = studentIndex,
+                studentName = decodedName
+        // 📋 Task Schedule screen
+ main
         composable(
             route = Routes.TASK_SCHEDULE,
             arguments = listOf(navArgument("degreeId") { type = NavType.LongType })

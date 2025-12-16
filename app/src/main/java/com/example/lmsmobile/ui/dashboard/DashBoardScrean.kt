@@ -13,8 +13,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+ main
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.CircleShape
+
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.lmsmobile.navigation.Routes
+main
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -29,6 +35,7 @@ import java.nio.charset.StandardCharsets
 
 @Composable
 fun DashboardScreen(
+    navController: NavHostController,
     studentIndex: String,
     studentName: String,
     degreeId: Long,

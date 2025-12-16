@@ -30,6 +30,7 @@ object Routes {
         return "results/${index.trim()}/$encodedName/$degreeId"
     }
 
+ main
     fun profileRoute(index: String): String {
         return "profile_screen/${index.trim()}"
     }
@@ -51,4 +52,9 @@ object Routes {
         val encoded = URLEncoder.encode(subjectName, StandardCharsets.UTF_8.name())
         return "note/$subjectId/$encoded"
     }
+=======
+    // Notes Routes
+    const val NOTES = "notes"
+    const val ADD_NOTE = "add_note"
+main
 }
