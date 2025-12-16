@@ -29,10 +29,13 @@ import java.nio.charset.StandardCharsets
 
 @Composable
 fun DashboardScreen(
-    navController: NavHostController,
+
     studentIndex: String,
     studentName: String,
+<<<<<<< Updated upstream
     degreeId: Long,
+=======
+>>>>>>> Stashed changes
     navController: NavHostController
 ) {
     val decodedName = URLDecoder.decode(studentName, StandardCharsets.UTF_8.name())
@@ -118,6 +121,7 @@ fun DashboardScreen(
                 )
             }
 
+<<<<<<< Updated upstream
             Spacer(modifier = Modifier.height(16.dp))
 
             Column(
@@ -146,6 +150,10 @@ fun DashboardScreen(
                     }
                 }
             }
+=======
+
+            // TODO: Add dashboard content (cards, lists, etc.)
+>>>>>>> Stashed changes
         }
     }
 }

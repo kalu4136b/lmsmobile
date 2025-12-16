@@ -54,8 +54,16 @@ fun AppNavHost(
             val vm: NotesViewModel = viewModel(
                 factory = ViewModelProvider.AndroidViewModelFactory(context.applicationContext as Application)
             )
-            NotesScreen(vm) { navController.navigate(Routes.ADD_NOTE) }
+
+            NotesScreen(
+                navController = navController,
+                viewModel = vm,
+                onAdd = {
+                    navController.navigate(Routes.ADD_NOTE)
+                }
+            )
         }
+
 
         composable(Routes.ADD_NOTE) {
             val vm: NotesViewModel = viewModel()
@@ -86,8 +94,8 @@ fun AppNavHost(
         }
 
             DashboardScreen(
-                navController = navController,    // ✅ pass navController
                 studentIndex = studentIndex,
+<<<<<<< Updated upstream
                 studentName = decodedName
         // 📋 Task Schedule screen
         composable(
@@ -118,6 +126,9 @@ fun AppNavHost(
                 indexNumber = studentIndex,
                 studentName = decodedName,
                 degreeId = degreeId,
+=======
+                studentName = decodedName,
+>>>>>>> Stashed changes
                 navController = navController
             )
         }

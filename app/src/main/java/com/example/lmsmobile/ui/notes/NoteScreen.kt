@@ -8,9 +8,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @Composable
-fun NotesScreen(viewModel: NotesViewModel, onAdd: () -> Unit) {
+fun NotesScreen(
+    navController: NavController,
+    viewModel: NotesViewModel,
+    onAdd: () -> Unit
+) {
     val notes by viewModel.notes.collectAsState()
 
     Scaffold(
@@ -29,6 +34,7 @@ fun NotesScreen(viewModel: NotesViewModel, onAdd: () -> Unit) {
                 ) {
                     Column(Modifier.padding(12.dp)) {
                         Text(note.title, style = MaterialTheme.typography.titleMedium)
+                        Spacer(Modifier.height(4.dp))
                         Text(note.content, maxLines = 2)
                     }
                 }
@@ -36,3 +42,4 @@ fun NotesScreen(viewModel: NotesViewModel, onAdd: () -> Unit) {
         }
     }
 }
+

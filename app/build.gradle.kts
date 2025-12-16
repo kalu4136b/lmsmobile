@@ -1,7 +1,12 @@
+
+val room_version = "2.6.1"
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+
+
 }
 
 android {
@@ -58,8 +63,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.navigation:navigation-compose:2.7.5")
-    implementation(libs.androidx.room.common.jvm)
-    implementation(libs.androidx.room.runtime.android)
+    //implementation(libs.androidx.room.common.jvm)
+    //implementation(libs.androidx.room.runtime.android)
 
     // Testing
     testImplementation("junit:junit:4.13.2")
@@ -67,6 +72,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.10.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    kapt ("androidx.room:room-compiler:$room_version")
 
     // Debug tools
     debugImplementation("androidx.compose.ui:ui-tooling")
