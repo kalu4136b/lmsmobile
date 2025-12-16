@@ -1,45 +1,93 @@
-package com.example.lmsmobile.ui.dashboard.components
+package com.example.lmsmobile.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.navigation.NavController
+import com.example.lmsmobile.navigation.Routes
 
 @Composable
 fun SideBar(
-    onItemClick: (String) -> Unit = {}
+    navController: NavController,
+    studentIndex: String
 ) {
-    BoxWithConstraints {
-        val topMargin = 20.dp // Match DashboardTopBar height
-
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(240.dp)
+            .background(Color.White)
+            .shadow(2.dp)
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(240.dp)
-                .padding(top = topMargin)
-                .background(Color.White)
+            modifier = Modifier.fillMaxHeight()
         ) {
-            SidebarItem(label = "Results", onClick = { onItemClick("Results") })
-            SidebarItem(label = "Subjects", onClick = { onItemClick("Subjects") })
-            SidebarItem(label = "Profile", onClick = { onItemClick("Profile") })
+            // Top gradient section
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(Color(0xFF090979), Color(0xFF4B6CB7))
+                        )
+                    ),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = "Menu",
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+            }
+
+            // Sidebar items
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(top = 16.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
+                SidebarItem(label = "Results") {
+                    navController.navigate(Routes.resultsRoute(studentIndex, "Student", 0L))
+                }
+                SidebarItem(label = "Quizzes") {
+                    navController.navigate(Routes.quizListRoute(studentIndex))
+                }
+                SidebarItem(label = "Subjects") {
+                    navController.navigate(Routes.subjectsRoute(studentIndex))
+                }
+                SidebarItem(label = "Logout") {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 fun SidebarItem(label: String, onClick: () -> Unit) {
-    Text(
-        text = label,
-        color = Color(0xFF090979),
-        fontSize = 18.sp,
+    Box(
         modifier = Modifier
-            .padding(start = 8.dp, top = 24.dp, bottom = 12.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .height(64.dp)
+            .background(Color(0xFFe0e0ff), shape = RoundedCornerShape(8.dp))
             .clickable { onClick() }
-    )
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Text(text = label, color = Color(0xFF090979), fontSize = 18.sp)
+    }
 }

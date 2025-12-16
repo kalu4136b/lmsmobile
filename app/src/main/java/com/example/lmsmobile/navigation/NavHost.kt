@@ -2,6 +2,7 @@ package com.example.lmsmobile.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,6 +12,17 @@ import com.example.lmsmobile.ui.dashboard.DashboardScreen
 import com.example.lmsmobile.ui.dashboard.TaskScheduleScreen
 import com.example.lmsmobile.ui.login.LoginScreen
 import com.example.lmsmobile.ui.results.ResultsScreen
+import com.example.lmsmobile.ui.screen.ProfileScreen
+import com.example.lmsmobile.ui.screen.ProfileViewModel
+import com.example.lmsmobile.ui.quiz.ViewOnlineQuizScreen
+import com.example.lmsmobile.ui.quiz.QuizViewModel
+import com.example.lmsmobile.ui.quiz.QuizListScreen
+import com.example.lmsmobile.ui.quiz.QuizListViewModel
+import com.example.lmsmobile.ui.subject.SubjectDisplayScreen
+import com.example.lmsmobile.ui.note.NoteScreen
+import com.example.lmsmobile.ui.note.LmsViewModel
+import com.example.lmsmobile.ui.note.LmsViewModelFactory
+import com.example.lmsmobile.ui.note.FullscreenImageScreen
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -20,12 +32,14 @@ fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val lmsViewModel: LmsViewModel = viewModel(factory = LmsViewModelFactory())
+
     NavHost(
         navController = navController,
         startDestination = Routes.LOGIN,
         modifier = modifier
     ) {
-        // 🔐 Login screen
+        // Login
         composable(Routes.LOGIN) {
             LoginScreen(
                 onLoginSuccess = { response ->
@@ -42,7 +56,7 @@ fun AppNavHost(
             )
         }
 
-        // 🏠 Dashboard screen
+        // Dashboard
         composable(
             route = Routes.DASHBOARD,
             arguments = listOf(
@@ -64,18 +78,16 @@ fun AppNavHost(
             )
         }
 
-        // 📋 Task Schedule screen
+        // Task Schedule
         composable(
             route = Routes.TASK_SCHEDULE,
-            arguments = listOf(
-                navArgument("degreeId") { type = NavType.LongType }
-            )
+            arguments = listOf(navArgument("degreeId") { type = NavType.LongType })
         ) { backStackEntry ->
             val degreeId = backStackEntry.arguments?.getLong("degreeId") ?: 0L
             TaskScheduleScreen(degreeId = degreeId)
         }
 
-        // 📊 Results screen
+        // Results
         composable(
             route = Routes.RESULTS,
             arguments = listOf(
@@ -93,6 +105,93 @@ fun AppNavHost(
                 indexNumber = studentIndex,
                 studentName = decodedName,
                 degreeId = degreeId,
+                navController = navController
+            )
+        }
+
+        // Profile
+        composable(
+            route = Routes.PROFILE,
+            arguments = listOf(navArgument("indexNumber") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val indexNumber = backStackEntry.arguments?.getString("indexNumber") ?: "unknown"
+            val viewModel: ProfileViewModel = viewModel()
+            ProfileScreen(
+                indexNumber = indexNumber,
+                viewModel = viewModel,
+                navController = navController
+            )
+        }
+
+        // Quiz (single active quiz)
+        composable(
+            route = Routes.QUIZ,
+            arguments = listOf(navArgument("indexNumber") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val indexNumber = backStackEntry.arguments?.getString("indexNumber") ?: "unknown"
+            val viewModel: QuizViewModel = viewModel()
+            ViewOnlineQuizScreen(
+                indexNumber = indexNumber,
+                viewModel = viewModel,
+                navController = navController
+            )
+        }
+
+        // Quiz List
+        composable(
+            route = Routes.QUIZ_LIST,
+            arguments = listOf(navArgument("studentIndex") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val studentIndex = backStackEntry.arguments?.getString("studentIndex") ?: "unknown"
+            val viewModel: QuizListViewModel = viewModel()
+            QuizListScreen(
+                navController = navController,
+                viewModel = viewModel,
+                studentIndex = studentIndex
+            )
+        }
+
+        // Subjects
+        composable(
+            route = Routes.SUBJECTS,
+            arguments = listOf(navArgument("studentIndex") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val studentIndex = backStackEntry.arguments?.getString("studentIndex") ?: "unknown"
+            SubjectDisplayScreen(
+                studentIndex = studentIndex,
+                viewModel = lmsViewModel,
+                navController = navController
+            )
+        }
+
+        // Notes
+        composable(
+            route = Routes.NOTE,
+            arguments = listOf(
+                navArgument("subjectId") { type = NavType.LongType },
+                navArgument("subjectName") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val subjectId = backStackEntry.arguments?.getLong("subjectId") ?: 0L
+            val encodedName = backStackEntry.arguments?.getString("subjectName") ?: "Subject"
+            val decodedName = URLDecoder.decode(encodedName, StandardCharsets.UTF_8.name())
+
+            NoteScreen(
+                subjectId = subjectId,
+                subjectName = decodedName,
+                viewModel = lmsViewModel,
+                navController = navController
+            )
+        }
+
+        // Fullscreen Image Viewer
+        composable(
+            route = "image_view/{imageUrl}",
+            arguments = listOf(navArgument("imageUrl") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val imageUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
+            FullscreenImageScreen(
+                imageUrl = imageUrl,
                 navController = navController
             )
         }
